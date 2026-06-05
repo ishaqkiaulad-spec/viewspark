@@ -3,366 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ViewSpark Premium - Creator Network</title>
+    <title>ViewSpark - Ultimate Creator Hub Network</title>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
     <style>
-        /* Premium Creator Dark Aesthetic */
-        :root {
-            --bg-main: #0B0B10;
-            --bg-card: #13131F;
-            --bg-input: #1A1A2E;
-            --accent-neon: #FF2E93;
-            --accent-blue: #00F0FF;
-            --text-main: #FFFFFF;
-            --text-muted: #8E8E9F;
-            --border-purple: #2D1B4E;
+        /* ViewSpark App Design */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background-color: var(--bg-main);
-            color: var(--text-main);
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            margin: 0; padding: 0; padding-bottom: 85px;
-            user-select: none; -webkit-tap-highlight-color: transparent;
+            background: linear-gradient(135deg, #0f0c1b 0%, #1a103c 100%);
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
         }
 
-        /* --- LOGIN OVERLAY --- */
-        .login-screen {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg-main); z-index: 1000;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 20px; box-sizing: border-box;
+        .login-container {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 40px 30px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
         }
-        .login-box {
-            background: var(--bg-card); border: 2px solid var(--border-purple);
-            padding: 40px 25px; border-radius: 20px; text-align: center;
-            width: 100%; max-width: 360px; box-shadow: 0 0 35px rgba(255, 46, 147, 0.2);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .google-btn {
-            background: #FFFFFF; color: #000000; border: none;
-            padding: 14px 20px; border-radius: 30px; font-size: 15px; font-weight: bold;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            width: 100%; margin-top: 30px; cursor: pointer; transition: 0.3s ease;
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
-        }
-        .google-btn:active { transform: scale(0.98); }
 
-        /* --- MODERN HEADER --- */
-        .header {
-            display: flex; flex-direction: column; gap: 12px;
-            padding: 15px; background: #0F0F1A; border-bottom: 1px solid var(--border-purple);
-            position: sticky; top: 0; z-index: 100;
-        }
-        .header-top { display: flex; justify-content: space-between; align-items: center; }
-        
-        .logo-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .logo-icon {
-            background: linear-gradient(135deg, var(--accent-blue), var(--accent-neon));
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
+        .logo-box {
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+            gap: 12px;
+            margin-bottom: 15px;
         }
-        .logo-icon svg {
-            width: 16px;
-            height: 16px;
-            fill: #0B0B10;
-            margin-left: 2px;
+
+        .play-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(45deg, #00c6ff, #0072ff);
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 20px rgba(0, 198, 255, 0.4);
         }
-        .logo {
-            font-size: 22px;
-            font-weight: 900;
+
+        .play-icon::after {
+            content: '';
+            width: 0;
+            height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-left: 16px solid #fff;
+            margin-left: 4px;
+        }
+
+        .logo-text {
+            font-size: 32px;
+            font-weight: 800;
             letter-spacing: 1px;
-            font-family: 'Arial Black', Gadget, sans-serif;
-            background: linear-gradient(to right, var(--accent-blue) 45%, var(--accent-neon) 100%);
+            background: linear-gradient(45deg, #00c6ff, #ff007f);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .search-container { width: 100%; }
-        .search-box {
-            background: var(--bg-input); border: 1px solid var(--border-purple); padding: 10px 18px;
-            border-radius: 25px; color: white; width: 100%; font-size: 14px; outline: none; box-sizing: border-box;
-            transition: 0.3s;
-        }
-        .search-box:focus { border-color: var(--accent-neon); box-shadow: 0 0 10px rgba(255, 46, 147, 0.3); }
-
-        /* --- NAVIGATION SYSTEM --- */
-        .page { display: none; padding: 15px; animation: fadeIn 0.3s ease-in-out; }
-        .page.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* --- CATEGORIES BAR --- */
-        .categories-container { overflow-x: auto; white-space: nowrap; padding: 5px 0 12px 0; margin-bottom: 10px; }
-        .categories-container::-webkit-scrollbar { display: none; }
-        .pill {
-            display: inline-block; background: var(--bg-card); color: var(--text-muted); padding: 8px 18px;
-            border-radius: 20px; margin-right: 8px; font-size: 13px; font-weight: 600; border: 1px solid var(--border-purple); cursor: pointer;
-        }
-        .pill.active {
-            background: linear-gradient(135deg, var(--accent-neon), #8A2BE2); color: #fff;
-            box-shadow: 0 0 15px rgba(255, 46, 147, 0.5); border: none;
+        .tagline {
+            color: #aaa;
+            font-size: 14px;
+            margin-bottom: 40px;
         }
 
-        /* --- PREMIUM VIDEO FEED --- */
-        .video-card { background: var(--bg-card); border-radius: 16px; overflow: hidden; margin-bottom: 22px; border: 1px solid #1F1F35; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-        .thumbnail-area { width: 100%; height: 200px; background-size: cover; background-position: center; position: relative; background-color: #1A1A2E; }
-        .duration-tag { position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.8); padding: 3px 6px; border-radius: 4px; font-size: 11px; font-weight: bold; }
-        .video-details { padding: 15px; display: flex; gap: 12px; }
-        .channel-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(45deg, var(--accent-neon), var(--accent-blue)); object-fit: cover; }
-        .video-info { flex: 1; }
-        .video-title { font-size: 15px; font-weight: bold; margin: 0 0 6px 0; line-height: 1.4; color: var(--text-main); }
-        .video-meta { font-size: 12px; color: var(--text-muted); margin: 0; }
+        .google-btn {
+            width: 100%;
+            background: #ffffff;
+            color: #1a103c;
+            border: none;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
+        }
 
-        /* --- ADVANCE STUDIO & DASHBOARD --- */
-        .studio-header { background: linear-gradient(135deg, #1A1A2E, #0F0F1A); padding: 25px; border-radius: 20px; border: 1px solid var(--border-purple); text-align: center; margin-bottom: 25px; }
-        .studio-avatar { width: 75px; height: 75px; border-radius: 50%; border: 3px solid var(--accent-neon); margin: 0 auto 12px auto; box-shadow: 0 0 15px rgba(255, 46, 147, 0.4); display: block; }
-        .analytics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
-        .analytics-card { background: var(--bg-card); padding: 18px; border-radius: 14px; border: 1px solid var(--border-purple); text-align: center; }
-        .analytics-card h3 { margin: 0 0 5px 0; font-size: 24px; color: var(--accent-blue); font-weight: 800; }
-        .analytics-card p { margin: 0; font-size: 12px; color: var(--text-muted); font-weight: 600; }
+        .google-btn:hover {
+            background: #f1f1f1;
+            transform: translateY(-2px);
+        }
 
-        /* Creator Toolkit & Features */
-        .section-title { font-size: 16px; font-weight: bold; margin: 20px 0 12px 0; color: var(--accent-neon); letter-spacing: 0.5px; }
-        .tools-list { display: flex; flex-direction: column; gap: 10px; }
-        .tool-item { background: #161626; border: 1px solid var(--border-purple); padding: 14px 18px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-        .tool-item span { font-weight: 600; font-size: 14px; }
-        .tool-badge { background: rgba(0, 240, 255, 0.15); color: var(--accent-blue); padding: 4px 10px; border-radius: 10px; font-size: 11px; font-weight: bold; }
+        .google-icon {
+            width: 22px;
+            height: 22px;
+        }
 
-        /* --- DYNAMIC UPLOAD MODAL --- */
-        .modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(5, 5, 10, 0.9); z-index: 800;
-            display: none; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;
+        /* Dashboard Screen (Login ke baad dikhegi) */
+        .dashboard-container {
+            display: none;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
         }
-        .modal.active { display: flex; }
-        .modal-content {
-            background: var(--bg-card); border: 2px solid var(--border-purple);
-            padding: 25px; border-radius: 20px; width: 100%; max-width: 400px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        .modal-title { font-size: 18px; font-weight: bold; margin-bottom: 18px; color: var(--accent-blue); }
-        .form-group { margin-bottom: 14px; }
-        .form-group label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 6px; font-weight: 600; }
-        .form-input {
-            width: 100%; background: var(--bg-input); border: 1px solid var(--border-purple);
-            padding: 10px 12px; border-radius: 8px; color: white; font-size: 14px; outline: none; box-sizing: border-box;
-        }
-        .modal-buttons { display: flex; gap: 10px; margin-top: 20px; }
-        .btn { flex: 1; padding: 12px; border-radius: 25px; font-size: 14px; font-weight: bold; border: none; cursor: pointer; text-align: center; }
-        .btn-success { background: linear-gradient(135deg, var(--accent-neon), #8A2BE2); color: white; }
-        .btn-cancel { background: #222235; color: var(--text-muted); }
 
-        /* --- PREMIUM BOTTOM NAVIGATION --- */
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; width: 100%; background: #0F0F1A;
-            display: flex; justify-content: space-around; align-items: center;
-            padding: 10px 0; border-top: 1px solid var(--border-purple); z-index: 100; box-sizing: border-box;
+        .user-pic {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid #00c6ff;
+            margin-bottom: 15px;
         }
-        .nav-item { color: var(--text-muted); font-size: 11px; text-align: center; display: flex; flex-direction: column; gap: 5px; font-weight: bold; cursor: pointer; width: 60px; transition: 0.2s; }
-        .nav-item svg { width: 22px; height: 22px; fill: currentColor; margin: 0 auto; }
-        .nav-item.active { color: var(--accent-blue); }
-        .create-btn-wrapper { position: relative; top: -5px; }
-        .create-btn {
-            background: linear-gradient(135deg, var(--accent-neon), #8A2BE2); width: 48px; height: 48px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; color: white; font-size: 28px; font-weight: bold;
-            box-shadow: 0 4px 15px rgba(255, 46, 147, 0.4); cursor: pointer; transition: 0.2s;
+
+        .logout-btn {
+            margin-top: 20px;
+            background: linear-gradient(45deg, #ff0055, #ff007f);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
         }
-        .create-btn:active { transform: scale(0.9); }
     </style>
 </head>
 <body>
 
-    <div id="loginScreen" class="login-screen">
-        <div class="login-box">
-            <div class="logo-wrapper" style="margin-bottom: 10px;">
-                <div class="logo-icon" style="width: 45px; height: 45px; border-radius: 12px;">
-                    <svg viewBox="0 0 24 24" style="width: 22px; height: 22px;"><path d="M8 5v14l11-7z"/></svg>
-                </div>
-                <div class="logo" style="font-size: 34px;">VIEWSPARK</div>
-            </div>
-            <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Ultimate Creator Hub Network</p>
-            
-            <button class="google-btn" id="btnGoogleLogin">
-                <svg width="18" height="18" viewBox="0 0 18 18">
-                    <path fill="#4285F4" d="M17.64 9.2c0-.63-.06-1.25-.16-1.84H9v3.47h4.84c-.21 1.12-.84 2.07-1.79 2.7l2.78 2.16c1.63-1.5 2.57-3.7 2.57-6.3a8.1 8.1 0 0 0-.21-2.2z"/>
-                    <path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.2l-2.78-2.17c-.77.52-1.76.83-3.18.83-2.44 0-4.51-1.65-5.25-3.87H.83v2.24A9 9 0 0 0 9 18z"/>
-                    <path fill="#FBBC05" d="M3.75 10.6A5.4 5.4 0 0 1 3.5 9c0-.56.1-1.1.25-1.6V5.16H.83A9 9 0 0 0 0 9c0 1.41.33 2.74.9 3.93l2.85-2.33z"/>
-                    <path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35L15 2.3A9 9 0 0 0 .93 5.16l2.82 2.25C4.5 5.22 6.56 3.58 9 3.58z"/>
-                </svg>
-                Continue with Google
-            </button>
+    <div class="login-container" id="loginScreen">
+        <div class="logo-box">
+            <div class="play-icon"></div>
+            <div class="logo-text">VIEWSPARK</div>
         </div>
+        <div class="tagline">Ultimate Creator Hub Network</div>
+        
+        <button class="google-btn" id="googleLoginBtn">
+            <img class="google-icon" src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/web-24dp/copy_of_googleg_24dp.png" alt="Google">
+            Continue with Google
+        </button>
     </div>
 
-    <div class="header">
-        <div class="header-top">
-            <div class="logo-wrapper">
-                <div class="logo-icon">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M8 5v14l11-7z"/>
-                    </svg>
-                </div>
-                <div class="logo">VIEWSPARK</div>
-            </div>
-            <div style="background: rgba(255,46,147,0.1); padding: 5px 12px; border-radius: 15px; border: 1px solid rgba(255,46,147,0.3); font-size: 11px; font-weight: bold; color: var(--accent-neon);">VLOG PRO</div>
-        </div>
-        <div class="search-container">
-            <input type="text" id="mainSearch" class="search-box" placeholder="Search vlogs, poetry, creators...">
-        </div>
+    <div class="dashboard-container" id="dashboardScreen">
+        <img class="user-pic" id="userPhoto" src="" alt="User">
+        <h2>Welcome, <span id="userName">Creator</span>!</h2>
+        <p style="color: #aaa; margin-top: 5px;" id="userEmail"></p>
+        <p style="margin-top: 20px; color: #00c6ff; font-weight: bold;">Aapka ViewSpark Dashboard Successfully Active Ho Gaya Hy! 🎉</p>
+        <button class="logout-btn" id="logoutBtn">Log Out</button>
     </div>
 
-    <div id="homePage" class="page active">
-        <div class="categories-container" id="categoriesBar">
-            <div class="pill active" onclick="filterCategory('All', this)">All Feed</div>
-            <div class="pill" onclick="filterCategory('Sad Poetry', this)">Sad Poetry</div>
-            <div class="pill" onclick="filterCategory('Vlogs', this)">Vlogs</div>
-            <div class="pill" onclick="filterCategory('AI Technology', this)">AI Tools</div>
-            <div class="pill" onclick="filterCategory('Cartoons', this)">Cartoons</div>
-        </div>
-        <div class="feed" id="videoFeed"></div>
-    </div>
-
-    <div id="shortsPage" class="page">
-        <div style="text-align:center; padding-top:80px; color:var(--text-muted);">
-            <span style="font-size:50px;">⚡</span>
-            <h3 style="color:white; margin:15px 0 5px 0;">Shorts Stream Pipeline</h3>
-            <p style="font-size:13px;">Vertical short-form content delivery active.</p>
-        </div>
-    </div>
-
-    <div id="subsPage" class="page">
-        <div style="text-align:center; padding-top:80px; color:var(--text-muted);">
-            <span style="font-size:50px;">🔔</span>
-            <h3 style="color:white; margin:15px 0 5px 0;">Subscribed Channels</h3>
-            <p style="font-size:13px;">Updates from your favorite creators will show here.</p>
-        </div>
-    </div>
-
-    <div id="studioPage" class="page">
-        <div class="studio-container">
-            <div class="studio-header">
-                <img id="userImg" class="studio-avatar" src="" alt="Avatar">
-                <h2 id="displayProfileName" style="margin:0; font-size:20px; font-weight:800;">Loading Hub...</h2>
-                <p id="displayProfileHandle" style="margin:5px 0 15px 0; color:var(--text-muted); font-size:13px;">@handle</p>
-                <button class="btn" style="background:#FF3B30; color:white; max-width:150px; padding:8px; font-size:12px; margin:0 auto;" id="btnLogout">Logout Hub</button>
-            </div>
-            
-            <div class="section-title">REALTIME CHANNEL ANALYTICS</div>
-            <div class="analytics-grid">
-                <div class="analytics-card"><h3 id="dashVideoCount">4</h3><p>Total Videos</p></div>
-                <div class="analytics-card"><h3>102K</h3><p>Total Views</p></div>
-                <div class="analytics-card"><h3>2.4K</h3><p>Subscribers</p></div>
-                <div class="analytics-card"><h3>480</h3><p>Watch Hours</p></div>
-            </div>
-
-            <div class="section-title">CREATOR ADVANCED TOOLKIT</div>
-            <div class="tools-list">
-                <div class="tool-item"><span>Vlog Video Editor Engine</span><div class="tool-badge">READY</div></div>
-                <div class="tool-item"><span>AI Thumbnail Designer Prompt</span><div class="tool-badge">ACTIVE</div></div>
-                <div class="tool-item"><span>SEO Tags & Title Generator</span><div class="tool-badge">INTEGRATED</div></div>
-            </div>
-        </div>
-    </div>
-
-    <div id="uploadModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-title">🚀 Upload Video to ViewSpark</div>
-            
-            <div class="form-group">
-                <label>VIDEO TITLE</label>
-                <input type="text" id="upTitle" class="form-input" placeholder="e.g., Karachi Market Vlog 2026">
-            </div>
-            <div class="form-group">
-                <label>CREATOR / CHANNEL NAME</label>
-                <input type="text" id="upChannel" class="form-input" placeholder="e.g., Ashab Life Vlogs">
-            </div>
-            <div class="form-group">
-                <label>CATEGORY</label>
-                <select id="upCategory" class="form-input" style="background: var(--bg-input); color: white;">
-                    <option value="Vlogs">Vlogs</option>
-                    <option value="Sad Poetry">Sad Poetry</option>
-                    <option value="AI Technology">AI Technology</option>
-                    <option value="Cartoons">Cartoons</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>THUMBNAIL IMAGE URL (Optional)</label>
-                <input type="text" id="upThumb" class="form-input" placeholder="Paste image link or leave blank">
-            </div>
-            
-            <div class="modal-buttons">
-                <button class="btn btn-cancel" id="btnCancelUpload">Cancel</button>
-                <button class="btn btn-success" id="btnPublishUpload">Publish Video</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="bottom-nav">
-        <div class="nav-item active" onclick="switchTab('home')">
-            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Home
-        </div>
-        <div class="nav-item" onclick="switchTab('shorts')">
-            <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Shorts
-        </div>
-        <div class="create-btn-wrapper">
-            <div class="create-btn" id="btnOpenUpload">+</div>
-        </div>
-        <div class="nav-item" onclick="switchTab('subs')">
-            <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>Subs
-        </div>
-        <div class="nav-item" onclick="switchTab('studio')">
-            <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>You
-        </div>
-    </div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithRedirect, GoogleAuthProvider, onAuthStateChanged, signOut, getRedirectResult } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
+    <script>
+        // Aapka real Firebase code yahan set kar diya hy
         const firebaseConfig = {
-            apiKey: "AIzaSyCOjnWb9p6brNC-FSfZmycNEnl3Rl1Yj0w",
-            authDomain: "viewspark-c90fe.firebaseapp.com",
-            projectId: "viewspark-c90fe",
-            storageBucket: "viewspark-c90fe.firebasestorage.app",
-            messagingSenderId: "1096935175707",
-            appId: "1:1096935175707:web:b6010773a134e066096abe"
+          apiKey: "AIzaSyCOjnWb9p6brNC-FSfZmycNEnl3Rl1Yj0w",
+          authDomain: "viewspark-c90fe.firebaseapp.com",
+          projectId: "viewspark-c90fe",
+          storageBucket: "viewspark-c90fe.firebasestorage.app",
+          messagingSenderId: "1096935175707",
+          appId: "1:1096935175707:web:b6010773a134e066096abe"
         };
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const provider = new GoogleAuthProvider();
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
 
-        const loginScreen = document.getElementById('loginScreen');
-        const btnGoogleLogin = document.getElementById('btnGoogleLogin');
-        const btnLogout = document.getElementById('btnLogout');
-        const displayProfileName = document.getElementById('displayProfileName');
-        const displayProfileHandle = document.getElementById('displayProfileHandle');
-        const userImg = document.getElementById('userImg');
-
-        // FIXED: Popup ko hata kar Redirect lagaya taake Google allow kare
-        btnGoogleLogin.addEventListener('click', () => {
-            signInWithRedirect(auth, provider);
+        // Google Login logic with Popup
+        const googleBtn = document.getElementById('googleLoginBtn');
+        googleBtn.addEventListener('click', () => {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider)
+                .then((result) => {
+                    console.log("Login Successful!");
+                })
+                .catch((error) => {
+                    alert("Login Error: " + error.message);
+                });
         });
 
-        btnLogout.addEventListener('click', () => {
-            signOut(auth).then(() => { window.location.reload(); });
+        // Auth state change (Login status track karna)
+        auth.onAuthStateChanged((user) => {
+            const loginScreen = document.getElementById('loginScreen');
+            const dashboardScreen = document.getElementById('dashboardScreen');
+
+            if (user) {
+                loginScreen.style.display = 'none';
+                dashboardScreen.style.display = 'block';
+
+                document.getElementById('userName').innerText = user.displayName;
+                document.getElementById('userEmail').innerText = user.email;
+                document.getElementById('userPhoto').src = user.photoURL || 'https://via.placeholder.com/80';
+            } else {
+                loginScreen.style.display = 'block';
+                dashboardScreen.style.display = 'none';
+            }
         });
 
-        // Redirect ka result check karne ke liye
-        getRedirectResult(auth)
-            .then((result) => {
-                if (result?.user) { console.log("Login Success via Redirect"); }
-            })
-            .catch((error) => {
-                console.error("Redi
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            auth.signOut();
+        });
+    </script>
+</body>
+</html>
