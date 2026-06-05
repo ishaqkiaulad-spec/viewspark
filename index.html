@@ -9,7 +9,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
     <style>
-        /* ViewSpark App Design */
+        /* --- 🎨 VIEWSPARK DESIGN SYSTEM --- */
         * {
             margin: 0;
             padding: 0;
@@ -18,12 +18,19 @@
         }
 
         body {
-            background: linear-gradient(135deg, #0f0c1b 0%, #1a103c 100%);
+            background: #090714;
             color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* --- 🔐 LOGIN PAGE STYLE --- */
+        .login-wrapper {
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            background: linear-gradient(135deg, #0f0c1b 0%, #1a103c 100%);
             padding: 20px;
         }
 
@@ -32,11 +39,11 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             padding: 40px 30px;
-            border-radius: 20px;
+            border-radius: 25px;
             width: 100%;
             max-width: 400px;
             text-align: center;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
         }
 
         .logo-box {
@@ -111,65 +118,325 @@
             height: 22px;
         }
 
-        /* Dashboard Screen (Login ke baad dikhegi) */
-        .dashboard-container {
-            display: none;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 30px;
-            border-radius: 20px;
+        /* --- 🖥️ MAIN APP LAYOUT (DASHBOARD & FEED) --- */
+        .app-wrapper {
+            display: none; /* Login ke baad khulega */
+        }
+
+        /* Header Navigation */
+        .app-header {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            max-width: 500px;
-            text-align: center;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            height: 70px;
+            background: #110e24;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            z-index: 100;
         }
 
-        .user-pic {
-            width: 80px;
-            height: 80px;
+        .nav-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-avatar {
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            border: 3px solid #00c6ff;
-            margin-bottom: 15px;
+            border: 2px solid #00c6ff;
         }
 
-        .logout-btn {
-            margin-top: 20px;
-            background: linear-gradient(45deg, #ff0055, #ff007f);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
+        /* Sidebar Menu */
+        .sidebar {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 240px;
+            height: calc(100vh - 70px);
+            background: #110e24;
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 20px 10px;
+            z-index: 90;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 15px;
+            color: #aaa;
+            text-decoration: none;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            font-weight: 500;
             cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background: rgba(0, 198, 255, 0.1);
+            color: #00c6ff;
+        }
+
+        /* Main Content Container */
+        .main-content {
+            margin-left: 240px;
+            margin-top: 70px;
+            padding: 30px;
+            min-height: calc(100vh - 70px);
+        }
+
+        .app-section {
+            display: none;
+        }
+
+        .app-section.active {
+            display: block;
+        }
+
+        /* --- 📱 FEATURE 1: TIKTOK STYLE VIDEO FEED --- */
+        .feed-container {
+            max-width: 450px;
+            margin: 0 auto;
+            height: calc(100vh - 150px);
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            scrollbar-width: none; /* Hide scrollbar */
+        }
+
+        .feed-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .video-card {
+            width: 100%;
+            height: 100%;
+            scroll-snap-align: start;
+            position: relative;
+            background: #000;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .video-card video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .video-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+        }
+
+        .video-creator {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 5px;
+            color: #00c6ff;
+        }
+
+        .video-desc {
+            font-size: 14px;
+            color: #ddd;
+        }
+
+        /* --- 📤 FEATURE 2: VIDEO UPLOADER --- */
+        .upload-box {
+            background: #161233;
+            border: 2px dashed rgba(0, 198, 255, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            max-width: 500px;
+            margin: 40px auto;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            background: #090714;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            color: #fff;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(45deg, #00c6ff, #0072ff);
+            color: #fff;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            margin-top: 20px;
             font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        /* --- 💰 FEATURE 3: MONETIZATION DASHBOARD --- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: #161233;
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.05);
+            text-align: left;
+        }
+
+        .stat-title {
+            font-size: 14px;
+            color: #aaa;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ff007f;
+        }
+
+        .stat-value.blue { color: #00c6ff; }
+        .stat-value.green { color: #00ff87; }
+
+        /* Mobile View Responsive Adjustment */
+        @media (max-width: 768px) {
+            .sidebar { width: 70px; }
+            .sidebar .menu-text { display: none; }
+            .main-content { margin-left: 70px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="login-container" id="loginScreen">
-        <div class="logo-box">
-            <div class="play-icon"></div>
-            <div class="logo-text">VIEWSPARK</div>
+    <div class="login-wrapper" id="loginPage">
+        <div class="login-container">
+            <div class="logo-box">
+                <div class="play-icon"></div>
+                <div class="logo-text">VIEWSPARK</div>
+            </div>
+            <div class="tagline">Ultimate Creator Hub Network</div>
+            
+            <button class="google-btn" id="btnGoogleLogin">
+                <img class="google-icon" src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/web-24dp/copy_of_googleg_24dp.png" alt="Google">
+                Continue with Google
+            </button>
         </div>
-        <div class="tagline">Ultimate Creator Hub Network</div>
-        
-        <button class="google-btn" id="googleLoginBtn">
-            <img class="google-icon" src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/web-24dp/copy_of_googleg_24dp.png" alt="Google">
-            Continue with Google
-        </button>
     </div>
 
-    <div class="dashboard-container" id="dashboardScreen">
-        <img class="user-pic" id="userPhoto" src="" alt="User">
-        <h2>Welcome, <span id="userName">Creator</span>!</h2>
-        <p style="color: #aaa; margin-top: 5px;" id="userEmail"></p>
-        <p style="margin-top: 20px; color: #00c6ff; font-weight: bold;">Aapka ViewSpark Dashboard Successfully Active Ho Gaya Hy! 🎉</p>
-        <button class="logout-btn" id="logoutBtn">Log Out</button>
+
+    <div class="app-wrapper" id="mainAppPage">
+        
+        <header class="app-header">
+            <div class="logo-box">
+                <div class="logo-text" style="font-size: 24px;">VIEWSPARK</div>
+            </div>
+            <div class="nav-profile">
+                <span id="navUserName" style="font-weight: 500;">Creator</span>
+                <img class="nav-avatar" id="navUserPhoto" src="" alt="Profile">
+            </div>
+        </header>
+
+        <nav class="sidebar">
+            <div class="menu-item active" onclick="switchSection('feedSection', this)">
+                <span>📱</span> <span class="menu-text">Video Feed</span>
+            </div>
+            <div class="menu-item" onclick="switchSection('uploadSection', this)">
+                <span>📤</span> <span class="menu-text">Upload Video</span>
+            </div>
+            <div class="menu-item" onclick="switchSection('dashboardSection', this)">
+                <span>💰</span> <span class="menu-text">Monetization</span>
+            </div>
+            <div class="menu-item" id="btnSignOut" style="margin-top: auto; color: #ff0055;">
+                <span>🚪</span> <span class="menu-text">Log Out</span>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            
+            <section id="feedSection" class="app-section active">
+                <h2 style="margin-bottom: 20px;">Trending Creators</h2>
+                <div class="feed-container">
+                    <div class="video-card">
+                        <video src="https://assets.mixkit.co/videos/preview/mixkit-neon-light-from-a-tunnel-41762-large.mp4" loop autoplay muted playsinline></video>
+                        <div class="video-overlay">
+                            <div class="video-creator">@Ashab_Life_Vlogs</div>
+                            <div class="video-desc">ViewSpark Architecture Engine Testing! 🚀 #vlog #tech</div>
+                        </div>
+                    </div>
+                    <div class="video-card">
+                        <video src="https://assets.mixkit.co/videos/preview/mixkit-abstract-laser-lights-background-41767-large.mp4" loop muted playsinline></video>
+                        <div class="video-overlay">
+                            <div class="video-creator">@Ibtasam_Creations</div>
+                            <div class="video-desc">Coding my first custom application UI panel. 😎</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="uploadSection" class="app-section">
+                <h2>Upload New Content</h2>
+                <p style="color: #aaa; font-size: 14px;">Apni video file select karein aur ViewSpark Network par share karein.</p>
+                
+                <div class="upload-box">
+                    <input type="file" id="videoFile" accept="video/*" style="display: none;">
+                    <button class="submit-btn" style="background: #110e24; border: 1px solid #00c6ff; margin-bottom: 15px;" onclick="document.getElementById('videoFile').click()">Choose Video File</button>
+                    
+                    <input type="text" id="videoTitle" class="form-input" placeholder="Video Title / Description likhein...">
+                    <input type="text" id="videoTags" class="form-input" placeholder="Tags lagayein (e.g. #vlog, #coding)...">
+                    
+                    <button class="submit-btn" onclick="simulateUpload()">Publish Video</button>
+                </div>
+            </section>
+
+            <section id="dashboardSection" class="app-section">
+                <h2>Creator Monetization Insights</h2>
+                <p style="color: #aaa; font-size: 14px;">Aapki videos par aane wali performance aur analytics reports.</p>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-title">Total Views</div>
+                        <div class="stat-value blue">124.5K</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">Watch Time (Hours)</div>
+                        <div class="stat-value">4.2K</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">Estimated Revenue</div>
+                        <div class="stat-value green">$145.80</div>
+                    </div>
+                </div>
+
+                <div style="background: #161233; padding: 20px; border-radius: 16px; margin-top: 30px; text-align: left;">
+                    <h4 style="color: #00ff87; margin-bottom: 8px;">🎉 Creator Status: Verified Channel</h4>
+                    <p style="color: #ccc; font-size: 14px;">Aapka account ViewSpark Monetization Model ke mutabiq ads revenue kamane ke liye bilkul qualified hy.</p>
+                </div>
+            </section>
+
+        </main>
     </div>
 
     <script>
-        // Aapka real Firebase code yahan set kar diya hy
+        // Aapki Verified Firebase Configuration
         const firebaseConfig = {
           apiKey: "AIzaSyCOjnWb9p6brNC-FSfZmycNEnl3Rl1Yj0w",
           authDomain: "viewspark-c90fe.firebaseapp.com",
@@ -179,45 +446,101 @@
           appId: "1:1096935175707:web:b6010773a134e066096abe"
         };
 
-        // Initialize Firebase
+        // Firebase Initialize karein
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
 
-        // Google Login logic with Popup
-        const googleBtn = document.getElementById('googleLoginBtn');
-        googleBtn.addEventListener('click', () => {
+        // 🛠️ Feature: Google Login POPUP System
+        document.getElementById('btnGoogleLogin').addEventListener('click', () => {
             const provider = new firebase.auth.GoogleAuthProvider();
             auth.signInWithPopup(provider)
                 .then((result) => {
-                    console.log("Login Successful!");
+                    console.log("Login Secure Connection Built!");
                 })
                 .catch((error) => {
-                    alert("Login Error: " + error.message);
+                    alert("Authentication Error: " + error.message);
                 });
         });
 
-        // Auth state change (Login status track karna)
+        // 🛠️ Feature: Dynamic Screen Router (State Monitor)
         auth.onAuthStateChanged((user) => {
-            const loginScreen = document.getElementById('loginScreen');
-            const dashboardScreen = document.getElementById('dashboardScreen');
+            const loginPage = document.getElementById('loginPage');
+            const mainAppPage = document.getElementById('mainAppPage');
 
             if (user) {
-                loginScreen.style.display = 'none';
-                dashboardScreen.style.display = 'block';
+                // Login hone par dashboard dikhao
+                loginPage.style.display = 'none';
+                mainAppPage.style.display = 'block';
 
-                document.getElementById('userName').innerText = user.displayName;
-                document.getElementById('userEmail').innerText = user.email;
-                document.getElementById('userPhoto').src = user.photoURL || 'https://via.placeholder.com/80';
+                // User details dynamically set karein
+                document.getElementById('navUserName').innerText = user.displayName;
+                document.getElementById('navUserPhoto').src = user.photoURL || 'https://via.placeholder.com/40';
+                
+                // Play feed video auto
+                const firstVideo = document.querySelector('.video-card video');
+                if(firstVideo) firstVideo.play();
             } else {
-                loginScreen.style.display = 'block';
-                dashboardScreen.style.display = 'none';
+                // Logout hone par wapas login screen
+                loginPage.style.display = 'flex';
+                mainAppPage.style.display = 'none';
             }
         });
 
-        // Logout
-        document.getElementById('logoutBtn').addEventListener('click', () => {
+        // 🛠️ Feature: Sidebar Navigation Section Changer
+        function switchSection(sectionId, element) {
+            // Tamam sections ko hide karein
+            const sections = document.querySelectorAll('.app-section');
+            sections.forEach(sec => sec.classList.remove('active'));
+
+            // Tamam menu-items se active class hatayein
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => item.classList.remove('active'));
+
+            // Sahi section show karein aur click item ko highlight karein
+            document.getElementById(sectionId).classList.add('active');
+            element.classList.add('active');
+
+            // Video Feed control handle karein
+            const videos = document.querySelectorAll('.video-card video');
+            if (sectionId !== 'feedSection') {
+                videos.forEach(v => v.pause());
+            } else {
+                const firstVideo = document.querySelector('.video-card video');
+                if(firstVideo) firstVideo.play();
+            }
+        }
+
+        // 🛠️ Feature: Simulated Upload Engine
+        function simulateUpload() {
+            const title = document.getElementById('videoTitle').value;
+            if(!title) {
+                alert("Please write a title before uploading!");
+                return;
+            }
+            alert("Success! Aapki video ViewSpark Feed Network par distribution ke liye process ho rahi hy. 🎉");
+            document.getElementById('videoTitle').value = "";
+            document.getElementById('videoTags').value = "";
+            switchSection('feedSection', document.querySelector('.menu-item'));
+        }
+
+        // 🛠️ Feature: Log Out System
+        document.getElementById('btnSignOut').addEventListener('click', () => {
             auth.signOut();
+        });
+
+        // Feed auto-play functionality scroll par handle karne ke liye simple detector
+        document.querySelector('.feed-container').addEventListener('scroll', () => {
+            const videos = document.querySelectorAll('.video-card video');
+            videos.forEach(video => {
+                const rect = video.getBoundingClientRect();
+                if (rect.top >= 0 && rect.bottom <= window.innerHeight) {
+                    video.play().catch(() => {});
+                } else {
+                    video.pause();
+                }
+            });
         });
     </script>
 </body>
 </html>
+
